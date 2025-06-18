@@ -1,27 +1,26 @@
 package com.tecnocajas.ejercicios
 
-import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.VideoView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
-import androidx.constraintlayout.helper.widget.Carousel
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tecnocajas.ejercicios.exercices.TwoNumSum
+import com.tecnocajas.ejercicios.exercices.N2ThreeNumberProm
+import com.tecnocajas.ejercicios.exercices.N1TwoNumSum
+import com.tecnocajas.ejercicios.exercices.N3TwoNumberMayor
+import com.tecnocajas.ejercicios.exercices.N4OddEven
 import com.tecnocajas.ejercicios.exercices.WithoutExercises
 
 class MainActivity : AppCompatActivity() {
@@ -29,10 +28,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var exercisesCarousel: RecyclerView
     private var cardExercise = mutableListOf<CardItem>()
     private lateinit var title: TextView
-    private val TwoNumSum: TwoNumSum = TwoNumSum()
+    private val TwoNumSum: N1TwoNumSum = N1TwoNumSum()
+    private val WithoutExercises: WithoutExercises = WithoutExercises()
+    private val ThreeNumberProm: N2ThreeNumberProm = N2ThreeNumberProm()
+    private val TwoNumberMayor: N3TwoNumberMayor = N3TwoNumberMayor()
+    private val OddEven: N4OddEven = N4OddEven()
     private lateinit var vista: View
     private lateinit var dynamicContainer: FrameLayout
-    private val WithoutExercises: WithoutExercises = WithoutExercises()
     private var exitExerciseButton: AppCompatButton?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,11 +118,16 @@ class MainActivity : AppCompatActivity() {
     private fun loadExerciseCards() {
         cardExercise = mutableListOf(
             CardItem(TwoNumSum.ID, TwoNumSum.title, TwoNumSum.description),
-            CardItem(TwoNumSum.ID, TwoNumSum.title, TwoNumSum.description)
+            CardItem(ThreeNumberProm.ID, ThreeNumberProm.title, ThreeNumberProm.description),
+            CardItem(TwoNumberMayor.ID, TwoNumberMayor.title, TwoNumberMayor.description),
+            CardItem(OddEven.ID, OddEven.title, OddEven.description)
         )
         val adapter = Adapter(cardExercise){ card ->
             when (card.ID) {
                 1 -> twoNumSum()
+                2 -> threeNumberProm()
+                3 -> twoNumberMayor()
+                4 -> oddEven()
             }
         }
         exercisesCarousel.adapter = adapter
@@ -141,6 +148,24 @@ class MainActivity : AppCompatActivity() {
     /*Suma de dos numeros*/
     private fun twoNumSum(){
         vista = TwoNumSum.makeContainer(this)
+        dynamicContainer.removeAllViews()
+        dynamicContainer.addView(vista)
+    }
+    /*Promedio de 3 numeros*/
+    private fun threeNumberProm(){
+        vista = ThreeNumberProm.makeContainer(this)
+        dynamicContainer.removeAllViews()
+        dynamicContainer.addView(vista)
+    }
+    /*Mayor de tres numeros*/
+    private fun twoNumberMayor(){
+        vista = TwoNumberMayor.makeContainer(this)
+        dynamicContainer.removeAllViews()
+        dynamicContainer.addView(vista)
+    }
+    /*Mayor de tres numeros*/
+    private fun oddEven(){
+        vista = OddEven.makeContainer(this)
         dynamicContainer.removeAllViews()
         dynamicContainer.addView(vista)
     }
