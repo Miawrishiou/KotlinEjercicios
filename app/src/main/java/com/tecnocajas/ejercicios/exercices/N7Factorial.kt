@@ -12,17 +12,17 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 
-class N4OddEven : ExerciseInterface {
-    override var ID = 4
-    override var title = "Par o impar"
-    override var description = "Evaluar si un numero es par o impar. Con una validacion previa."
+class N7Factorial : ExerciseInterface {
+    override var ID = 7
+    override var title = "Factorial"
+    override var description = "Calcular el factorial de un numero."
 
     override fun makeContainer(context: Context): View {
         /*Layout principal*/
         val layout = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER
-            setPadding(32, 32, 32, 32)
+            setPadding(5, 5, 5, 5)
         }
         /*Titulo del ejercicio*/
         val titulo = TextView(context).apply {
@@ -33,7 +33,7 @@ class N4OddEven : ExerciseInterface {
         }
         /*Entradas de los numeros*/
         val input1 = EditText(context).apply {
-            hint = "Número 1"
+            hint = "Ingrese su numero"
             inputType = InputType.TYPE_CLASS_NUMBER
         }
         /*Resultados*/
@@ -44,17 +44,16 @@ class N4OddEven : ExerciseInterface {
         }
         /*Realizar la el promedio*/
         val boton = Button(context).apply {
-            text = "Par o Impar"
+            text = "Factorial"
 
             setOnClickListener {
                 if (validation(input1.text.toString(), context)) {
                     try {
                         var input1 = input1.text.toString().toInt()
-
-                        var result = oddEven(input1)
-                        resultado.text = "El numero que ingreso ${result}"
+                        var result = factorial(input1)
+                        resultado.text = "El Factorial es: ${result}"
                     } catch (e : NumberFormatException) {
-                        Toast.makeText(context, "Error en la conversion de valores a double, ${e.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Error en la conversion de valores a integer, ${e.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -75,8 +74,14 @@ class N4OddEven : ExerciseInterface {
         }
         return true
     }
-    private fun oddEven(input1: Int): String {
-        val resultado = if (input1 % 2 == 0) "Es par" else "Es impar"
-        return resultado
+    private fun factorial(input1: Int): Int {
+        var acumulator = input1
+        for (i in 1 .. input1) {
+            if (i == input1) {
+                continue
+            }
+            acumulator*=i
+        }
+        return acumulator
     }
 }

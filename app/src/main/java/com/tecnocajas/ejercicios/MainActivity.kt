@@ -21,6 +21,10 @@ import com.tecnocajas.ejercicios.exercices.N2ThreeNumberProm
 import com.tecnocajas.ejercicios.exercices.N1TwoNumSum
 import com.tecnocajas.ejercicios.exercices.N3TwoNumberMayor
 import com.tecnocajas.ejercicios.exercices.N4OddEven
+import com.tecnocajas.ejercicios.exercices.N5UnitConverter
+import com.tecnocajas.ejercicios.exercices.N6PositivNegativeZero
+import com.tecnocajas.ejercicios.exercices.N7Factorial
+import com.tecnocajas.ejercicios.exercices.N8PrimeNumber
 import com.tecnocajas.ejercicios.exercices.WithoutExercises
 
 class MainActivity : AppCompatActivity() {
@@ -33,6 +37,10 @@ class MainActivity : AppCompatActivity() {
     private val ThreeNumberProm: N2ThreeNumberProm = N2ThreeNumberProm()
     private val TwoNumberMayor: N3TwoNumberMayor = N3TwoNumberMayor()
     private val OddEven: N4OddEven = N4OddEven()
+    private val UnitConvert: N5UnitConverter = N5UnitConverter()
+    private val PositiveNegativeZero: N6PositivNegativeZero = N6PositivNegativeZero()
+    private val Factorial: N7Factorial = N7Factorial()
+    private val PrimeNumber: N8PrimeNumber = N8PrimeNumber()
     private lateinit var vista: View
     private lateinit var dynamicContainer: FrameLayout
     private var exitExerciseButton: AppCompatButton?= null
@@ -120,7 +128,11 @@ class MainActivity : AppCompatActivity() {
             CardItem(TwoNumSum.ID, TwoNumSum.title, TwoNumSum.description),
             CardItem(ThreeNumberProm.ID, ThreeNumberProm.title, ThreeNumberProm.description),
             CardItem(TwoNumberMayor.ID, TwoNumberMayor.title, TwoNumberMayor.description),
-            CardItem(OddEven.ID, OddEven.title, OddEven.description)
+            CardItem(OddEven.ID, OddEven.title, OddEven.description),
+            CardItem(UnitConvert.ID, UnitConvert.title, UnitConvert.description),
+            CardItem(PositiveNegativeZero.ID, PositiveNegativeZero.title, PositiveNegativeZero.description),
+            CardItem(Factorial.ID, Factorial.title, Factorial.description),
+            CardItem(PrimeNumber.ID, PrimeNumber.title, PrimeNumber.description),
         )
         val adapter = Adapter(cardExercise){ card ->
             when (card.ID) {
@@ -128,6 +140,10 @@ class MainActivity : AppCompatActivity() {
                 2 -> threeNumberProm()
                 3 -> twoNumberMayor()
                 4 -> oddEven()
+                5 -> unitConvert()
+                6 -> positiveNegativeZero()
+                7 -> factorial()
+                8 -> primeNumber()
             }
         }
         exercisesCarousel.adapter = adapter
@@ -168,5 +184,30 @@ class MainActivity : AppCompatActivity() {
         vista = OddEven.makeContainer(this)
         dynamicContainer.removeAllViews()
         dynamicContainer.addView(vista)
+    }
+    /*Conversor de unidades*/
+    private fun unitConvert(){
+        vista = UnitConvert.makeContainer(this)
+        dynamicContainer.removeAllViews()
+        dynamicContainer.addView(vista)
+    }
+    /*numero positivo, negativo o cero*/
+    private fun positiveNegativeZero(){
+        vista = PositiveNegativeZero.makeContainer(this)
+        dynamicContainer.removeAllViews()
+        dynamicContainer.addView(vista)
+    }
+    /*factorial de un numero*/
+    private fun factorial() {
+        vista = Factorial.makeContainer(this)
+        dynamicContainer.removeAllViews()
+        dynamicContainer.addView(vista)
+    }
+    /*Prime Number*/
+    private fun primeNumber() {
+        vista = PrimeNumber.makeContainer(this)
+        dynamicContainer.removeAllViews()
+        dynamicContainer.addView(vista)
+
     }
 }

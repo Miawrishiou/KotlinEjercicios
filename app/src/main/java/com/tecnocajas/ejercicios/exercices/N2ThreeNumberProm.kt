@@ -28,7 +28,7 @@ class N2ThreeNumberProm : ExerciseInterface{
         val titulo = TextView(context).apply {
             text = title
             textSize = 22f
-            setTextColor(Color.WHITE)
+            setTextColor(Color.BLACK)
             typeface = Typeface.DEFAULT_BOLD
         }
         /*Entradas de los numeros*/
