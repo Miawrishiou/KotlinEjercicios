@@ -5,7 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:windowSoftInputMode="adjustResize">
     <VideoView
         android:id="@+id/video_background"
         android:layout_width="match_parent"
@@ -15,81 +16,81 @@
         android:scaleY="2.5"
         android:layout_gravity="center"/>
 
-    <LinearLayout
-        android:paddingTop="30dp"
+    <ScrollView
+        android:id="@+id/srv_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:orientation="horizontal"
-            android:layout_gravity="center_horizontal">
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:rotation="10"
-                android:scaleX="1"
-                android:scaleY="1"
-                android:src="@drawable/estrella" />
-            <ImageView
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:scaleX="1"
-                android:scaleY="1"
-                android:src="@drawable/estrella" />
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:rotation="350"
-                android:scaleX="1"
-                android:scaleY="1"
-                android:src="@drawable/estrella" />
-        </LinearLayout>
-        <TextView
-            android:id="@+id/resalt_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="EJERCICIOS"
-            android:textSize="45sp"
-            android:textAlignment="center"
-            android:fontFamily="@font/rubik_black"/>
+        android:fillViewport="true">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/exercises_carousel"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="170dp"
-            android:clipToPadding="false"
-            android:paddingStart="32dp"
-            android:paddingEnd="32dp"
-            android:clipToOutline="true"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:orientation="vertical">
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_exit"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Salir de\neste ejercicio"
-            android:background="@drawable/button_activities"
-            android:layout_gravity="end"
-            android:fontFamily="@font/rubik_black"
-            android:textColor="@color/white"
-            android:layout_marginRight="20dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:layout_marginBottom="10dp"
-            />
-        <FrameLayout
-            android:id="@+id/dynamic_container"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:background="@drawable/dynamic_container"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp">
-        </FrameLayout>
-    </LinearLayout>
+            android:orientation="vertical"
+            android:paddingTop="30dp"
+            android:paddingBottom="30dp">
+
+            <!-- Estrellas -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:orientation="horizontal"
+                android:layout_gravity="center_horizontal">
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:rotation="10"
+                    android:src="@drawable/estrella" />
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/estrella" />
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:rotation="350"
+                    android:src="@drawable/estrella" />
+            </LinearLayout>
+
+            <!-- Título -->
+            <TextView
+                android:id="@+id/resalt_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="EJERCICIOS"
+                android:textSize="45sp"
+                android:textAlignment="center"
+                android:fontFamily="@font/rubik_black" />
+
+            <!-- Carrusel -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/exercises_carousel"
+                android:layout_width="match_parent"
+                android:layout_height="170dp"
+                android:clipToPadding="false"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp"
+                android:clipToOutline="true" />
+            <!-- Botón y contenedor dinámico -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_marginTop="30dp"
+                android:id="@+id/btn_exit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Salir de\neste ejercicio"
+                android:background="@drawable/button_activities"
+                android:layout_gravity="end"
+                android:fontFamily="@font/rubik_black"
+                android:textColor="@color/white"
+                android:layout_marginRight="20dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_marginBottom="10dp" />
+            <FrameLayout
+                android:id="@+id/dynamic_container"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:background="@drawable/dynamic_container"
+                android:layout_marginHorizontal="20dp"/>
+        </LinearLayout>
+    </ScrollView>
 </FrameLayout>

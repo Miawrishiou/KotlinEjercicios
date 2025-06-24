@@ -4,8 +4,12 @@ import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.net.Uri
 import android.os.Bundle
+import android.renderscript.Script
 import android.view.View
+import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.VideoView
@@ -15,8 +19,10 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tecnocajas.ejercicios.exercices.N10SortArray
 import com.tecnocajas.ejercicios.exercices.N2ThreeNumberProm
 import com.tecnocajas.ejercicios.exercices.N1TwoNumSum
 import com.tecnocajas.ejercicios.exercices.N3TwoNumberMayor
@@ -25,6 +31,7 @@ import com.tecnocajas.ejercicios.exercices.N5UnitConverter
 import com.tecnocajas.ejercicios.exercices.N6PositivNegativeZero
 import com.tecnocajas.ejercicios.exercices.N7Factorial
 import com.tecnocajas.ejercicios.exercices.N8PrimeNumber
+import com.tecnocajas.ejercicios.exercices.N9Calculator
 import com.tecnocajas.ejercicios.exercices.WithoutExercises
 
 class MainActivity : AppCompatActivity() {
@@ -32,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var exercisesCarousel: RecyclerView
     private var cardExercise = mutableListOf<CardItem>()
     private lateinit var title: TextView
+    private lateinit var scrollViewMain: ScrollView
     private val TwoNumSum: N1TwoNumSum = N1TwoNumSum()
     private val WithoutExercises: WithoutExercises = WithoutExercises()
     private val ThreeNumberProm: N2ThreeNumberProm = N2ThreeNumberProm()
@@ -41,6 +49,8 @@ class MainActivity : AppCompatActivity() {
     private val PositiveNegativeZero: N6PositivNegativeZero = N6PositivNegativeZero()
     private val Factorial: N7Factorial = N7Factorial()
     private val PrimeNumber: N8PrimeNumber = N8PrimeNumber()
+    private val Calculator: N9Calculator = N9Calculator()
+    private val SortArray: N10SortArray = N10SortArray()
     private lateinit var vista: View
     private lateinit var dynamicContainer: FrameLayout
     private var exitExerciseButton: AppCompatButton?= null
@@ -60,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         title = findViewById(R.id.resalt_text)
         dynamicContainer = findViewById(R.id.dynamic_container)
         exitExerciseButton = findViewById(R.id.btn_exit)
-
+        scrollViewMain = findViewById(R.id.srv_main)
         /*inicializacion de componentes*/
         initComponents()
     }
@@ -72,7 +82,6 @@ class MainActivity : AppCompatActivity() {
         loadExerciseCards()
         resaltTextStyle()
         defaultViewDynamicCont()
-
         exitExerciseButton?.setOnClickListener {
             exitExerciseButton()
         }
@@ -133,6 +142,8 @@ class MainActivity : AppCompatActivity() {
             CardItem(PositiveNegativeZero.ID, PositiveNegativeZero.title, PositiveNegativeZero.description),
             CardItem(Factorial.ID, Factorial.title, Factorial.description),
             CardItem(PrimeNumber.ID, PrimeNumber.title, PrimeNumber.description),
+            CardItem(Calculator.ID, Calculator.title, Calculator.description),
+            CardItem(SortArray.ID, SortArray.title, SortArray.description),
         )
         val adapter = Adapter(cardExercise){ card ->
             when (card.ID) {
@@ -144,6 +155,8 @@ class MainActivity : AppCompatActivity() {
                 6 -> positiveNegativeZero()
                 7 -> factorial()
                 8 -> primeNumber()
+                9 -> calculator()
+                10 -> sortArray()
             }
         }
         exercisesCarousel.adapter = adapter
@@ -163,51 +176,47 @@ class MainActivity : AppCompatActivity() {
     /*Ejercicios*/
     /*Suma de dos numeros*/
     private fun twoNumSum(){
-        vista = TwoNumSum.makeContainer(this)
-        dynamicContainer.removeAllViews()
-        dynamicContainer.addView(vista)
+        setDynamicExercise(TwoNumSum.makeContainer(this))
     }
     /*Promedio de 3 numeros*/
     private fun threeNumberProm(){
-        vista = ThreeNumberProm.makeContainer(this)
-        dynamicContainer.removeAllViews()
-        dynamicContainer.addView(vista)
+        setDynamicExercise(ThreeNumberProm.makeContainer(this))
     }
     /*Mayor de tres numeros*/
     private fun twoNumberMayor(){
-        vista = TwoNumberMayor.makeContainer(this)
-        dynamicContainer.removeAllViews()
-        dynamicContainer.addView(vista)
+        setDynamicExercise(TwoNumberMayor.makeContainer(this))
     }
     /*Mayor de tres numeros*/
     private fun oddEven(){
-        vista = OddEven.makeContainer(this)
-        dynamicContainer.removeAllViews()
-        dynamicContainer.addView(vista)
+        setDynamicExercise(OddEven.makeContainer(this))
     }
     /*Conversor de unidades*/
     private fun unitConvert(){
-        vista = UnitConvert.makeContainer(this)
-        dynamicContainer.removeAllViews()
-        dynamicContainer.addView(vista)
+        setDynamicExercise(UnitConvert.makeContainer(this))
     }
     /*numero positivo, negativo o cero*/
     private fun positiveNegativeZero(){
-        vista = PositiveNegativeZero.makeContainer(this)
-        dynamicContainer.removeAllViews()
-        dynamicContainer.addView(vista)
+        setDynamicExercise(PositiveNegativeZero.makeContainer(this))
     }
     /*factorial de un numero*/
     private fun factorial() {
-        vista = Factorial.makeContainer(this)
-        dynamicContainer.removeAllViews()
-        dynamicContainer.addView(vista)
+        setDynamicExercise(Factorial.makeContainer(this))
     }
     /*Prime Number*/
     private fun primeNumber() {
-        vista = PrimeNumber.makeContainer(this)
+        setDynamicExercise(PrimeNumber.makeContainer(this))
+    }
+    /*Calculator*/
+    private fun calculator() {
+        setDynamicExercise(Calculator.makeContainer(this))
+    }
+    /*Sort Array*/
+    private fun sortArray() {
+        setDynamicExercise(SortArray.makeContainer(this))
+    }
+    /*Metodo superior para hacer las vistas*/
+    private fun setDynamicExercise(view: View) {
         dynamicContainer.removeAllViews()
-        dynamicContainer.addView(vista)
-
+        dynamicContainer.addView(view)
     }
 }
