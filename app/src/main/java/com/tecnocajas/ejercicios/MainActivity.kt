@@ -28,6 +28,9 @@ import com.tecnocajas.ejercicios.exercices.N12ElementsArraySum
 import com.tecnocajas.ejercicios.exercices.N13HigherElement
 import com.tecnocajas.ejercicios.exercices.N14ElementTimesInArray
 import com.tecnocajas.ejercicios.exercices.N15RevertArray
+import com.tecnocajas.ejercicios.exercices.N16Fibonacci
+import com.tecnocajas.ejercicios.exercices.N17FactorialRecursivity
+import com.tecnocajas.ejercicios.exercices.N18VocalToNumber
 import com.tecnocajas.ejercicios.exercices.N2ThreeNumberProm
 import com.tecnocajas.ejercicios.exercices.N1TwoNumSum
 import com.tecnocajas.ejercicios.exercices.N3TwoNumberMayor
@@ -61,6 +64,9 @@ class MainActivity : AppCompatActivity() {
     private val HigherElement: N13HigherElement = N13HigherElement()
     private val ElementTimesInArray: N14ElementTimesInArray = N14ElementTimesInArray()
     private val RevertArray: N15RevertArray = N15RevertArray()
+    private val Fibonacci: N16Fibonacci = N16Fibonacci()
+    private val FactorialRecursivity: N17FactorialRecursivity = N17FactorialRecursivity()
+    private val VocalToNumber: N18VocalToNumber = N18VocalToNumber()
     private lateinit var vista: View
     private lateinit var dynamicContainer: FrameLayout
     private var exitExerciseButton: AppCompatButton?= null
@@ -158,7 +164,10 @@ class MainActivity : AppCompatActivity() {
             CardItem(ElementsArraySum.ID, ElementsArraySum.title, ElementsArraySum.description),
             CardItem(HigherElement.ID, HigherElement.title, HigherElement.description),
             CardItem(ElementTimesInArray.ID, ElementTimesInArray.title, ElementTimesInArray.description),
-            CardItem(RevertArray.ID, RevertArray.title, RevertArray.description)
+            CardItem(RevertArray.ID, RevertArray.title, RevertArray.description),
+            CardItem(Fibonacci.ID, Fibonacci.title, Fibonacci.description),
+            CardItem(FactorialRecursivity.ID, FactorialRecursivity.title, FactorialRecursivity.description),
+            CardItem(VocalToNumber.ID, VocalToNumber.title, VocalToNumber.description)
         )
         val adapter = Adapter(cardExercise) { card ->
             when (card.ID) {
@@ -177,6 +186,9 @@ class MainActivity : AppCompatActivity() {
                 13 -> higherElement()
                 14 -> elementTimesInArray()
                 15 -> revertArray()
+                16 -> fibonacci()
+                17 -> factorialRecursivity()
+                18 -> vocalToNumber()
             }
         }
         exercisesCarousel.adapter = adapter
@@ -253,6 +265,18 @@ class MainActivity : AppCompatActivity() {
     /*Revertir un Array*/
     private fun revertArray() {
         setDynamicExercise(RevertArray.makeContainer(this))
+    }
+    /*Fibonacci con recursividad*/
+    private fun fibonacci() {
+        setDynamicExercise(Fibonacci.makeContainer(this))
+    }
+    /*Factorial con recursividad*/
+    private fun factorialRecursivity() {
+        setDynamicExercise(FactorialRecursivity.makeContainer(this))
+    }
+    /*Vocal a número*/
+    private fun vocalToNumber() {
+        setDynamicExercise(VocalToNumber.makeContainer(this))
     }
     /*Super metodo para hacer las vistas*/
     private fun setDynamicExercise(view: View) {
