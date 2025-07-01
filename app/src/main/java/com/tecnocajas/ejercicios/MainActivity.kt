@@ -23,6 +23,11 @@ import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tecnocajas.ejercicios.exercices.N10SortArray
+import com.tecnocajas.ejercicios.exercices.N11BinarieSearch
+import com.tecnocajas.ejercicios.exercices.N12ElementsArraySum
+import com.tecnocajas.ejercicios.exercices.N13HigherElement
+import com.tecnocajas.ejercicios.exercices.N14ElementTimesInArray
+import com.tecnocajas.ejercicios.exercices.N15RevertArray
 import com.tecnocajas.ejercicios.exercices.N2ThreeNumberProm
 import com.tecnocajas.ejercicios.exercices.N1TwoNumSum
 import com.tecnocajas.ejercicios.exercices.N3TwoNumberMayor
@@ -51,6 +56,11 @@ class MainActivity : AppCompatActivity() {
     private val PrimeNumber: N8PrimeNumber = N8PrimeNumber()
     private val Calculator: N9Calculator = N9Calculator()
     private val SortArray: N10SortArray = N10SortArray()
+    private val BinarieSearch: N11BinarieSearch = N11BinarieSearch()
+    private val ElementsArraySum: N12ElementsArraySum = N12ElementsArraySum()
+    private val HigherElement: N13HigherElement = N13HigherElement()
+    private val ElementTimesInArray: N14ElementTimesInArray = N14ElementTimesInArray()
+    private val RevertArray: N15RevertArray = N15RevertArray()
     private lateinit var vista: View
     private lateinit var dynamicContainer: FrameLayout
     private var exitExerciseButton: AppCompatButton?= null
@@ -144,8 +154,13 @@ class MainActivity : AppCompatActivity() {
             CardItem(PrimeNumber.ID, PrimeNumber.title, PrimeNumber.description),
             CardItem(Calculator.ID, Calculator.title, Calculator.description),
             CardItem(SortArray.ID, SortArray.title, SortArray.description),
+            CardItem(BinarieSearch.ID, BinarieSearch.title, BinarieSearch.description),
+            CardItem(ElementsArraySum.ID, ElementsArraySum.title, ElementsArraySum.description),
+            CardItem(HigherElement.ID, HigherElement.title, HigherElement.description),
+            CardItem(ElementTimesInArray.ID, ElementTimesInArray.title, ElementTimesInArray.description),
+            CardItem(RevertArray.ID, RevertArray.title, RevertArray.description)
         )
-        val adapter = Adapter(cardExercise){ card ->
+        val adapter = Adapter(cardExercise) { card ->
             when (card.ID) {
                 1 -> twoNumSum()
                 2 -> threeNumberProm()
@@ -157,6 +172,11 @@ class MainActivity : AppCompatActivity() {
                 8 -> primeNumber()
                 9 -> calculator()
                 10 -> sortArray()
+                11 -> binarieSearch()
+                12 -> elementsArraySum()
+                13 -> higherElement()
+                14 -> elementTimesInArray()
+                15 -> revertArray()
             }
         }
         exercisesCarousel.adapter = adapter
@@ -214,7 +234,27 @@ class MainActivity : AppCompatActivity() {
     private fun sortArray() {
         setDynamicExercise(SortArray.makeContainer(this))
     }
-    /*Metodo superior para hacer las vistas*/
+    /*Binerie Search*/
+    private fun binarieSearch() {
+        setDynamicExercise(BinarieSearch.makeContainer(this))
+    }
+    /*Elements array sum*/
+    private fun elementsArraySum() {
+        setDynamicExercise(ElementsArraySum.makeContainer(this))
+    }
+    /*Higher element*/
+    private fun higherElement() {
+        setDynamicExercise(HigherElement.makeContainer(this))
+    }
+    /*Element Times in Array*/
+    private fun elementTimesInArray() {
+        setDynamicExercise(ElementTimesInArray.makeContainer(this))
+    }
+    /*Revertir un Array*/
+    private fun revertArray() {
+        setDynamicExercise(RevertArray.makeContainer(this))
+    }
+    /*Super metodo para hacer las vistas*/
     private fun setDynamicExercise(view: View) {
         dynamicContainer.removeAllViews()
         dynamicContainer.addView(view)

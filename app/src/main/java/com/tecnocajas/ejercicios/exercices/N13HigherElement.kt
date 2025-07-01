@@ -12,12 +12,11 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import kotlinx.coroutines.delay
 
-class N10SortArray : ExerciseInterface {
-    override var ID: Int = 10
-    override var title: String = "Ordenar un Array"
-    override var description: String = "Ordena un array de números enteros de menor a mayor"
+class N13HigherElement : ExerciseInterface {
+    override var ID = 13
+    override var title = "Elemento mayor de un array"
+    override var description = "Realiza la suma de los elementos de un array"
 
     override fun makeContainer(context: Context): View {
         /*Layout principal*/
@@ -27,30 +26,31 @@ class N10SortArray : ExerciseInterface {
             setPadding(5, 5, 5, 5)
         }
         /*Entradas del array por parte del usuario*/
-        val arrayInput = EditText(context).apply {
+        val arrayInput1 = EditText(context).apply {
             hint = "Ej: 3,1,4,1,5"
+            setTextColor(Color.BLACK)
             inputType = InputType.TYPE_CLASS_TEXT
             filters = arrayOf(InputFilter { source, _, _, _, _, _,->
-                // solo números y comas
+                //solo números y comas
                 if (source.all { it.isDigit() || it == ',' }) null else ""
             })
         }
         /*Resultados*/
         val resultado = TextView(context).apply {
-            text = "Dale a Ord. para Ordenar"
+            text = "Dale al boton."
             setTextColor(Color.LTGRAY)
             textSize = 18f
         }
         /*Realizar la el promedio*/
         val buttonOperation = Button(context).apply {
-            text = "Ordenar"
+            text = "Sumar los dos arreglos"
 
             setOnClickListener {
-                if (validation(arrayInput.text.toString(), context)) {
+                if (validation(arrayInput1.text.toString(), context)) {
                     try {
-                        var arrayInputUser = arrayInput.text.toString().split(",").filter { it.trim().isNotEmpty() }.map { it.toInt() }
-                        var result = sort(arrayInputUser)
-                        resultado.text = "El array ordenado es: ${result.joinToString(", ")}"
+                        var arrayInputUser1 = arrayInput1.text.toString().split(",").filter { it.trim().isNotEmpty() }.map { it.toInt() }
+                        var result = higherElement(arrayInputUser1)
+                        resultado.text = "El array ordenado es: ${result}"
                     } catch (e : NumberFormatException) {
                         Toast.makeText(context, "Error en la conversion de entrada a array, ${e.message}", Toast.LENGTH_SHORT).show()
                     }
@@ -65,7 +65,7 @@ class N10SortArray : ExerciseInterface {
         }
         layout.apply {
             addView(titulo)
-            addView(arrayInput)
+            addView(arrayInput1)
             addView(buttonOperation)
             addView(resultado)
         }
@@ -74,26 +74,21 @@ class N10SortArray : ExerciseInterface {
 
     private fun validation(input1: String, context: Context): Boolean {
         if (input1.isEmpty()) {
-            Toast.makeText(context, "Por favor, ingrese un array de números.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Por favor, ingrese un array de números en los espacios.", Toast.LENGTH_SHORT).show()
             return false
         }
         return true
-
     }
-    public fun sort(arrayNumbers: List<Int>): List<Int> {
-        //Implementamos el algoritmo de ordenamiento QUICK SORT
-        //Si el usuario inserta solo un numero o no inserta nada (aunque esta validado)
-        if (arrayNumbers.size < 2) {
-            return arrayNumbers
+    private fun higherElement(array: List<Int>): Int {
+        //inicializacion de la variable que almacena el mayor numero
+        var higherActualElement = -1
+        //Bucle para recorrer el arreglo encontrando los mayores elementos
+        for (i in 0 until array.size) {
+            if (array[i] >= higherActualElement) {
+                higherActualElement = array[i]
+            }
         }
-
-        //Pivote
-        var pivot = arrayNumbers[arrayNumbers.size/2]
-        var mayorThanPivot = arrayNumbers.filter { it > pivot }
-        var equalToPivot = arrayNumbers.filter { it == pivot }
-        var lessThanPivot = arrayNumbers.filter { it < pivot }
-
-        //Recursividad
-        return sort(lessThanPivot) + equalToPivot + sort(mayorThanPivot)
+        //Retornar el elemento mayor
+        return higherActualElement
     }
 }

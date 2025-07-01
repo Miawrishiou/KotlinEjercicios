@@ -12,12 +12,11 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import kotlinx.coroutines.delay
 
-class N10SortArray : ExerciseInterface {
-    override var ID: Int = 10
-    override var title: String = "Ordenar un Array"
-    override var description: String = "Ordena un array de números enteros de menor a mayor"
+class N15RevertArray : ExerciseInterface {
+    override var ID = 15
+    override var title = "Reverso de un array"
+    override var description = "Devuelve el reverso de un array de numeros"
 
     override fun makeContainer(context: Context): View {
         /*Layout principal*/
@@ -43,14 +42,14 @@ class N10SortArray : ExerciseInterface {
         }
         /*Realizar la el promedio*/
         val buttonOperation = Button(context).apply {
-            text = "Ordenar"
+            text = "Invertir"
 
             setOnClickListener {
                 if (validation(arrayInput.text.toString(), context)) {
                     try {
                         var arrayInputUser = arrayInput.text.toString().split(",").filter { it.trim().isNotEmpty() }.map { it.toInt() }
-                        var result = sort(arrayInputUser)
-                        resultado.text = "El array ordenado es: ${result.joinToString(", ")}"
+                        var result = revertArray(arrayInputUser)
+                        resultado.text = "El array invertido  es: ${result.joinToString(", ")}"
                     } catch (e : NumberFormatException) {
                         Toast.makeText(context, "Error en la conversion de entrada a array, ${e.message}", Toast.LENGTH_SHORT).show()
                     }
@@ -78,22 +77,12 @@ class N10SortArray : ExerciseInterface {
             return false
         }
         return true
-
     }
-    public fun sort(arrayNumbers: List<Int>): List<Int> {
-        //Implementamos el algoritmo de ordenamiento QUICK SORT
-        //Si el usuario inserta solo un numero o no inserta nada (aunque esta validado)
-        if (arrayNumbers.size < 2) {
-            return arrayNumbers
+    private fun revertArray (array: List<Int>) : List<Int> {
+        var reverted = mutableListOf<Int>()
+        for (i in array.size-1 downTo 0) {
+            reverted.add(array[i])
         }
-
-        //Pivote
-        var pivot = arrayNumbers[arrayNumbers.size/2]
-        var mayorThanPivot = arrayNumbers.filter { it > pivot }
-        var equalToPivot = arrayNumbers.filter { it == pivot }
-        var lessThanPivot = arrayNumbers.filter { it < pivot }
-
-        //Recursividad
-        return sort(lessThanPivot) + equalToPivot + sort(mayorThanPivot)
+        return reverted
     }
 }
