@@ -1,8 +1,8 @@
+// Clase N2: Promedio de tres números
 package com.tecnocajas.ejercicios.exercices
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Typeface
 import android.text.InputType
 import android.view.Gravity
 import android.view.View
@@ -11,84 +11,181 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import com.tecnocajas.ejercicios.R
 
-class N2ThreeNumberProm : ExerciseInterface{
+class N2ThreeNumberProm : ExerciseInterface {
     override var ID: Int = 2
-    override var title: String = "Promedio de tres Numeros"
-    override var description: String = "Sacar el prmedio de tres numeros previamente validados"
+    override var title: String = "Promedio de tres números"
+    override var description: String = "Calcular el promedio de tres números con validación previa"
 
     override fun makeContainer(context: Context): View {
-        /*Layout principal*/
-        val layout = LinearLayout(context).apply {
+        // Cargar tipografías Rubik
+        val fontBold = ResourcesCompat.getFont(context, R.font.rubik_bold)
+        val fontRegular = ResourcesCompat.getFont(context, R.font.rubik_regular)
+        val fontSemiBold = ResourcesCompat.getFont(context, R.font.rubik_semibold)
+
+        // Contenedor principal vertical centrado
+        val mainLayout = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER
+            gravity = Gravity.CENTER_VERTICAL
             setPadding(32, 32, 32, 32)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+            )
         }
-        /*Titulo del ejercicio*/
-        val titulo = TextView(context).apply {
+
+        // Título del ejercicio
+        val titleTextView = TextView(context).apply {
             text = title
             textSize = 22f
-            setTextColor(Color.BLACK)
-            typeface = Typeface.DEFAULT_BOLD
+            setTextColor(Color.parseColor("#222222"))
+            typeface = fontBold
+            gravity = Gravity.CENTER
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 0, 0, 24) }
         }
-        /*Entradas de los numeros*/
-        val input1 = EditText(context).apply {
-            hint = "Número 1"
+
+        // Primera entrada de número
+        val numberInput1 = EditText(context).apply {
+            hint = "Ingrese el primer número"
             inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+            typeface = fontRegular
+            setTextColor(Color.parseColor("#222222"))
+            setHintTextColor(Color.parseColor("#888888"))
+            setBackgroundColor(Color.parseColor("#EEEEEE"))
+            setPadding(24, 16, 24, 16)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 8, 0, 8) }
         }
-        val input2 = EditText(context).apply {
-            hint = "Número 2"
+
+        // Segunda entrada de número
+        val numberInput2 = EditText(context).apply {
+            hint = "Ingrese el segundo número"
             inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+            typeface = fontRegular
+            setTextColor(Color.parseColor("#222222"))
+            setHintTextColor(Color.parseColor("#888888"))
+            setBackgroundColor(Color.parseColor("#EEEEEE"))
+            setPadding(24, 16, 24, 16)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 8, 0, 8) }
         }
-        val input3 = EditText(context).apply {
-            hint = "Número 3"
+
+        // Tercera entrada de número
+        val numberInput3 = EditText(context).apply {
+            hint = "Ingrese el tercer número"
             inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+            typeface = fontRegular
+            setTextColor(Color.parseColor("#222222"))
+            setHintTextColor(Color.parseColor("#888888"))
+            setBackgroundColor(Color.parseColor("#EEEEEE"))
+            setPadding(24, 16, 24, 16)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 8, 0, 24) }
         }
-        /*Resultados*/
-        val resultado = TextView(context).apply {
+
+        // Texto de resultado
+        val resultTextView = TextView(context).apply {
             text = "Resultado: "
-            setTextColor(Color.LTGRAY)
-            textSize = 18f
+            textSize = 16f
+            setTextColor(Color.DKGRAY)
+            typeface = fontRegular
+            gravity = Gravity.CENTER
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
         }
-        /*Realizar la el promedio*/
-        val boton = Button(context).apply {
-            text = "Promediar"
+
+        // Botón para calcular promedio
+        val resultButton = Button(context).apply {
+            text = "Calcular promedio"
+            typeface = fontSemiBold
+            background = ContextCompat.getDrawable(context, R.drawable.button_activities)
+            setTextColor(Color.WHITE)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                gravity = Gravity.CENTER_HORIZONTAL
+                setMargins(0, 0, 0, 24)
+            }
 
             setOnClickListener {
-                if (validation(input1.text.toString(), input2.text.toString(), input3.text.toString(), context)) {
+                // Validar entradas antes de calcular
+                if (validateInputs(
+                        numberInput1.text.toString(),
+                        numberInput2.text.toString(),
+                        numberInput3.text.toString(),
+                        context
+                    )
+                ) {
                     try {
-                        var input1 = input1.text.toString().toDouble()
-                        var input2 = input2.text.toString().toDouble()
-                        var input3 = input3.text.toString().toDouble()
+                        val num1 = numberInput1.text.toString().toDouble()
+                        val num2 = numberInput2.text.toString().toDouble()
+                        val num3 = numberInput3.text.toString().toDouble()
 
-                        var result = prom(input1, input2, input3)
-                        resultado.text = "El promedio de tus tres numeros es: ${result}"
-                    } catch (e : NumberFormatException) {
-                        Toast.makeText(context, "Error en la conversion de valores a double, ${e.message}", Toast.LENGTH_SHORT).show()
+                        val average = calculateAverage(num1, num2, num3)
+                        resultTextView.text = "El promedio de los tres números es: $average"
+                    } catch (e: NumberFormatException) {
+                        // Notificación de error en conversión de valores
+                        Toast.makeText(
+                            context,
+                            "Error: formato numérico inválido. Detalle: ${e.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
         }
-        /*Cargar los elementos*/
-        layout.apply {
-            addView(titulo)
-            addView(input1)
-            addView(input2)
-            addView(input3)
-            addView(boton)
-            addView(resultado)
+
+        // Agregar vistas al layout principal
+        mainLayout.apply {
+            addView(titleTextView)
+            addView(numberInput1)
+            addView(numberInput2)
+            addView(numberInput3)
+            addView(resultButton)
+            addView(resultTextView)
         }
-        return layout
+
+        return mainLayout
     }
-    private fun validation(input1: String, input2: String, input3: String, context: Context) : Boolean {
-        if (input1.isEmpty() || input2.isEmpty() || input3.isEmpty()){
-            Toast.makeText(context, "Por favor, revisa los campos marcados.", Toast.LENGTH_SHORT).show()
-            return false
-        }
-        return true
+
+    // Validar que los tres campos no estén vacíos
+    private fun validateInputs(
+        value1: String,
+        value2: String,
+        value3: String,
+        context: Context
+    ): Boolean {
+        return if (value1.isEmpty() || value2.isEmpty() || value3.isEmpty()) {
+            Toast.makeText(
+                context,
+                "Por favor, complete los tres campos antes de continuar.",
+                Toast.LENGTH_SHORT
+            ).show()
+            false
+        } else true
     }
-    private fun prom(input1: Double, input2: Double, input3: Double): Double {
-        var result:Double = (input1 + input2 + input3)/3
-        return result
+
+    // Calcular promedio de tres números
+    private fun calculateAverage(
+        number1: Double,
+        number2: Double,
+        number3: Double
+    ): Double {
+        return (number1 + number2 + number3) / 3
     }
 }

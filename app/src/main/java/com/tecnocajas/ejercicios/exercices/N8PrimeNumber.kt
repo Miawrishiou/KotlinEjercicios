@@ -1,8 +1,8 @@
+// Clase N8: Número primo
 package com.tecnocajas.ejercicios.exercices
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Typeface
 import android.text.InputType
 import android.view.Gravity
 import android.view.View
@@ -11,76 +11,142 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import com.tecnocajas.ejercicios.R
 
 class N8PrimeNumber : ExerciseInterface {
-    override var ID = 8
-    override var title = "Numero Primo"
-    override var description = "Determina si un numero es primo o no."
+    override var ID: Int = 8
+    override var title: String = "Número primo"
+    override var description: String = "Determina si un número es primo o no con validación previa"
+
     override fun makeContainer(context: Context): View {
-        /*Layout principal*/
-        val layout = LinearLayout(context).apply {
+        // Cargar tipografías Rubik
+        val fontBold = ResourcesCompat.getFont(context, R.font.rubik_bold)
+        val fontRegular = ResourcesCompat.getFont(context, R.font.rubik_regular)
+        val fontSemiBold = ResourcesCompat.getFont(context, R.font.rubik_semibold)
+
+        // Contenedor principal vertical centrado
+        val mainLayout = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER
-            setPadding(5, 5, 5, 5)
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(32, 32, 32, 32)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+            )
         }
-        /*Titulo del ejercicio*/
-        val titulo = TextView(context).apply {
+
+        // Título del ejercicio
+        val titleTextView = TextView(context).apply {
             text = title
             textSize = 22f
-            setTextColor(Color.BLACK)
-            typeface = Typeface.DEFAULT_BOLD
+            setTextColor(Color.parseColor("#222222"))
+            typeface = fontBold
+            gravity = Gravity.CENTER
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 0, 0, 24) }
         }
-        /*Entradas de los numeros*/
-        val input1 = EditText(context).apply {
-            hint = "Ingrese su numero"
+
+        // Campo de entrada para el número
+        val numberInput = EditText(context).apply {
+            hint = "Ingrese un número"
             inputType = InputType.TYPE_CLASS_NUMBER
+            typeface = fontRegular
+            setTextColor(Color.parseColor("#222222"))
+            setHintTextColor(Color.parseColor("#888888"))
+            setBackgroundColor(Color.parseColor("#EEEEEE"))
+            setPadding(24, 16, 24, 16)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 0, 0, 24) }
         }
-        /*Resultados*/
-        val resultado = TextView(context).apply {
+
+        // Texto de resultado
+        val resultTextView = TextView(context).apply {
             text = "Resultado: "
-            setTextColor(Color.LTGRAY)
-            textSize = 18f
+            textSize = 16f
+            setTextColor(Color.DKGRAY)
+            typeface = fontRegular
+            gravity = Gravity.CENTER
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
         }
-        /*Realizar la el promedio*/
-        val boton = Button(context).apply {
+
+        // Botón para evaluar primalidad
+        val resultButton = Button(context).apply {
             text = "¿Es primo?"
+            typeface = fontSemiBold
+            background = ContextCompat.getDrawable(context, R.drawable.button_activities)
+            setTextColor(Color.WHITE)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 0, 0, 24); gravity = Gravity.CENTER_HORIZONTAL }
+
             setOnClickListener {
-                if (validation(input1.text.toString(), context)) {
+                // Validar entrada antes de evaluar
+                val inputText = numberInput.text.toString()
+                if (validateInput(inputText, context)) {
                     try {
-                        var input1 = input1.text.toString().toInt()
-                        var result = primeNumber(input1)
-                        resultado.text = "El numero ${result}"
-                    } catch (e : NumberFormatException) {
-                        Toast.makeText(context, "Error en la conversion de valores a int, ${e.message}", Toast.LENGTH_SHORT).show()
+                        val inputNumber = inputText.toInt()
+                        val resultString = primeNumber(inputNumber)
+                        resultTextView.text = "El número $resultString"
+                    } catch (e: NumberFormatException) {
+                        // Notificación de error de conversión
+                        Toast.makeText(
+                            context,
+                            "Error: formato de número inválido. Detalle: ${e.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
         }
-        /*Cargar los elementos dentro del layout para renderizar por bloque*/
-        layout.apply {
-            addView(titulo)
-            addView(input1)
-            addView(boton)
-            addView(resultado)
+
+        // Agregar vistas al layout principal
+        mainLayout.apply {
+            addView(titleTextView)
+            addView(numberInput)
+            addView(resultButton)
+            addView(resultTextView)
         }
-        return layout
+
+        return mainLayout
     }
-    private fun validation(input1: String, context: Context) : Boolean {
-        if (input1.isEmpty()){
-            Toast.makeText(context, "Por favor, revisa los campos marcados. Hay valores nulos", Toast.LENGTH_SHORT).show()
-            return false
-        }
-        return true
+
+    // Validar que el campo no esté vacío
+    private fun validateInput(
+        value: String,
+        context: Context
+    ): Boolean {
+        return if (value.isEmpty()) {
+            Toast.makeText(
+                context,
+                "Por favor, ingrese un número antes de continuar.",
+                Toast.LENGTH_SHORT
+            ).show()
+            false
+        } else true
     }
-    private fun primeNumber(input1: Int): String {
-        var resultado = "${input1} es Primo"
+
+    // Determina si un número es primo contando divisores
+    private fun primeNumber(
+        input1: Int
+    ): String {
+        var resultado = "${input1} no es Primo"
         var divisors = 0
         when (input1) {
             0 -> resultado = "${input1} no es primo"
             1 -> resultado = "${input1} no es primo"
             else -> {
                 for (i in 1..input1) {
-                    if (input1%i==0){
+                    if (input1 % i == 0) {
                         divisors++
                     }
                 }
@@ -91,5 +157,4 @@ class N8PrimeNumber : ExerciseInterface {
         }
         return resultado
     }
-
 }

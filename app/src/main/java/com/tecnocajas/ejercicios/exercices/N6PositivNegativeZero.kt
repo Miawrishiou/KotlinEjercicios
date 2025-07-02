@@ -2,7 +2,6 @@ package com.tecnocajas.ejercicios.exercices
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Typeface
 import android.text.InputType
 import android.view.Gravity
 import android.view.View
@@ -11,77 +10,132 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import com.tecnocajas.ejercicios.R
 
 class N6PositivNegativeZero : ExerciseInterface {
-    override var ID = 6
-    override var title = "Positivo, negativo o cero"
-    override var description = "Evaluar si un numero es positivo, negativo o cero."
+    override var ID: Int = 6
+    override var title: String = "Positivo, negativo o cero"
+    override var description: String = "Evaluar si un número es positivo, negativo o cero con validación previa"
 
     override fun makeContainer(context: Context): View {
-        /*Layout principal*/
-        val layout = LinearLayout(context).apply {
+        // Cargar tipografías Rubik
+        val fontBold = ResourcesCompat.getFont(context, R.font.rubik_bold)
+        val fontRegular = ResourcesCompat.getFont(context, R.font.rubik_regular)
+        val fontSemiBold = ResourcesCompat.getFont(context, R.font.rubik_semibold)
+
+        // Contenedor principal vertical centrado
+        val mainLayout = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER
-            setPadding(5, 5, 5, 5)
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(32, 32, 32, 32)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+            )
         }
-        /*Titulo del ejercicio*/
-        val titulo = TextView(context).apply {
+
+        // Título del ejercicio
+        val titleTextView = TextView(context).apply {
             text = title
             textSize = 22f
-            setTextColor(Color.BLACK)
-            typeface = Typeface.DEFAULT_BOLD
+            setTextColor(Color.parseColor("#222222"))
+            typeface = fontBold
+            gravity = Gravity.CENTER
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 0, 0, 24) }
         }
-        /*Entradas de los numeros*/
-        val input1 = EditText(context).apply {
-            hint = "Ingrese su numero"
-            inputType = InputType.TYPE_CLASS_NUMBER  or InputType.TYPE_NUMBER_FLAG_SIGNED
+
+        // Campo de entrada para el número
+        val numberInput = EditText(context).apply {
+            hint = "Ingrese un número"
+            inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED
+            typeface = fontRegular
+            setTextColor(Color.parseColor("#222222"))
+            setHintTextColor(Color.parseColor("#888888"))
+            setBackgroundColor(Color.parseColor("#EEEEEE"))
+            setPadding(24, 16, 24, 16)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 0, 0, 24) }
         }
-        /*Resultados*/
-        val resultado = TextView(context).apply {
+
+        // Texto de resultado
+        val resultTextView = TextView(context).apply {
             text = "Resultado: "
-            setTextColor(Color.LTGRAY)
-            textSize = 18f
+            textSize = 16f
+            setTextColor(Color.DKGRAY)
+            typeface = fontRegular
+            gravity = Gravity.CENTER
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
         }
-        /*Realizar la el promedio*/
-        val boton = Button(context).apply {
-            text = "¿Que numero es?"
+
+        // Botón para evaluar signo
+        val resultButton = Button(context).apply {
+            text = "Evaluar signo"
+            typeface = fontSemiBold
+            background = ContextCompat.getDrawable(context, R.drawable.button_activities)
+            setTextColor(Color.WHITE)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 0, 0, 24); gravity = Gravity.CENTER_HORIZONTAL }
+
             setOnClickListener {
-                if (validation(input1.text.toString(), context)) {
+                // Validar entrada antes de evaluar
+                if (validateInput(numberInput.text.toString(), context)) {
                     try {
-                        var input1 = input1.text.toString().toDouble()
-                        var result = positiveNegativeZero(input1)
-                        resultado.text = "El numero que ingresó ${result}"
-                    } catch (e : NumberFormatException) {
-                        Toast.makeText(context, "Error en la conversion de valores a double, ${e.message}", Toast.LENGTH_SHORT).show()
+                        val value = numberInput.text.toString().toDouble()
+                        val evaluation = positiveNegativeZero(value)
+                        resultTextView.text = "El número ingresado $evaluation"
+                    } catch (e: NumberFormatException) {
+                        // Notificación de error de formato
+                        Toast.makeText(
+                            context,
+                            "Error: formato numérico inválido. Detalle: ${e.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
         }
-        /*Cargar los elementos dentro del layout para renderizar por bloque*/
-        layout.apply {
-            addView(titulo)
-            addView(input1)
-            addView(boton)
-            addView(resultado)
+
+        // Agregar vistas al layout principal
+        mainLayout.apply {
+            addView(titleTextView)
+            addView(numberInput)
+            addView(resultButton)
+            addView(resultTextView)
         }
-        return layout
+
+        return mainLayout
     }
-    private fun validation(input1: String, context: Context) : Boolean {
-        if (input1.isEmpty()){
-            Toast.makeText(context, "Por favor, revisa los campos marcados. Hay valores nulos", Toast.LENGTH_SHORT).show()
-            return false
-        }
-        return true
+
+    // Validar que el campo no esté vacío
+    private fun validateInput(value: String, context: Context): Boolean {
+        return if (value.isEmpty()) {
+            Toast.makeText(
+                context,
+                "Por favor, ingrese un número antes de continuar.",
+                Toast.LENGTH_SHORT
+            ).show()
+            false
+        } else true
     }
-    private fun positiveNegativeZero(input1: Double): String {
-        var resultado = ""
-        if (input1 > 0) {
-            resultado = "Es positivo"
-        } else if (input1 < 0) {
-            resultado = "Es negativo"
-        } else {
-            resultado = "Es cero"
+
+    // Determinar si un número es positivo, negativo o cero
+    private fun positiveNegativeZero(number: Double): String {
+        return when {
+            number > 0 -> "es positivo"
+            number < 0 -> "es negativo"
+            else -> "es cero"
         }
-        return resultado
     }
 }

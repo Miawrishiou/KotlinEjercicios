@@ -1,87 +1,168 @@
+// Clase N1: Suma de dos números
 package com.tecnocajas.ejercicios.exercices
+
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Typeface
 import android.text.InputType
-import android.view.*
+import android.view.Gravity
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import com.tecnocajas.ejercicios.R
 
 class N1TwoNumSum : ExerciseInterface {
-    override var title = "Suma de dos numeros"
-    override var description = "Sumar dos numeros validando que estos esten correctamente adecuados."
-    override var ID = 1
+    override var ID: Int = 1
+    override var title: String = "Suma de dos números"
+    override var description: String = "Suma dos números validando que los datos ingresados sean correctos."
 
     override fun makeContainer(context: Context): View {
-        /*Declaracion de los elementos y sus contenidos*/
-        /*Layout principal*/
-        val layout = LinearLayout(context).apply {
+        // Cargar tipografías Rubik
+        val fontBold = ResourcesCompat.getFont(context, R.font.rubik_bold)
+        val fontRegular = ResourcesCompat.getFont(context, R.font.rubik_regular)
+        val fontSemiBold = ResourcesCompat.getFont(context, R.font.rubik_semibold)
+
+        // Contenedor principal vertical centrado
+        val mainLayout = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER
+            gravity = Gravity.CENTER_VERTICAL
             setPadding(32, 32, 32, 32)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+            )
         }
-        /*Titulo del ejercicio*/
-        val titulo = TextView(context).apply {
-            text = "Suma de dos números"
+
+        // Título del ejercicio
+        val titleTextView = TextView(context).apply {
+            text = title
             textSize = 22f
-            setTextColor(Color.BLACK)
-            typeface = Typeface.DEFAULT_BOLD
+            setTextColor(Color.parseColor("#222222"))
+            typeface = fontBold
+            gravity = Gravity.CENTER
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 0, 0, 24) }
         }
-        /*Entradas de los numeros*/
-        val input1 = EditText(context).apply {
-            hint = "Número 1"
+
+        // Campo de entrada para primer número
+        val numberInput1 = EditText(context).apply {
+            hint = "Ingrese el primer número"
             inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+            typeface = fontRegular
+            setTextColor(Color.parseColor("#222222"))
+            setHintTextColor(Color.parseColor("#888888"))
+            setBackgroundColor(Color.parseColor("#EEEEEE"))
+            setPadding(24, 16, 24, 16)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 8, 0, 8) }
         }
-        val input2 = EditText(context).apply {
-            hint = "Número 2"
+
+        // Campo de entrada para segundo número
+        val numberInput2 = EditText(context).apply {
+            hint = "Ingrese el segundo número"
             inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+            typeface = fontRegular
+            setTextColor(Color.parseColor("#222222"))
+            setHintTextColor(Color.parseColor("#888888"))
+            setBackgroundColor(Color.parseColor("#EEEEEE"))
+            setPadding(24, 16, 24, 16)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 8, 0, 24) }
         }
-        /*Resultados*/
-        val resultado = TextView(context).apply {
+
+        // Texto de resultado
+        val resultTextView = TextView(context).apply {
             text = "Resultado: "
-            setTextColor(Color.LTGRAY)
-            textSize = 18f
+            textSize = 16f
+            setTextColor(Color.DKGRAY)
+            typeface = fontRegular
+            gravity = Gravity.CENTER
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
         }
-        /*Realizar la suma*/
-        val boton = Button(context).apply {
-            text = "Sumar"
+
+        // Botón para mostrar resultado
+        val resultButton = Button(context).apply {
+            text = "Mostrar resultado"
+            typeface = fontSemiBold
+            background = ContextCompat.getDrawable(context, R.drawable.button_activities)
+            setTextColor(Color.WHITE)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                gravity = Gravity.CENTER_HORIZONTAL
+                setMargins(0, 0, 0, 24)
+            }
 
             setOnClickListener {
-                if (validation(input1.text.toString(), input2.text.toString(), context)) {
+                val value1 = numberInput1.text.toString()
+                val value2 = numberInput2.text.toString()
+
+                // Validar que ambos campos estén completos
+                if (validateInputs(value1, value2, context)) {
                     try {
-                        var input1 = input1.text.toString().toDouble()
-                        var input2 = input2.text.toString().toDouble()
-                        var result = sum(input1, input2)
-                        resultado.text = "El resultado de la suma es: ${result}"
-                    } catch (e : NumberFormatException) {
-                        Toast.makeText(context, "Error en la conversion de valores a double, ${e.message}", Toast.LENGTH_SHORT).show()
+                        val num1 = value1.toDouble()
+                        val num2 = value2.toDouble()
+                        val sumResult = sum(num1, num2)
+                        resultTextView.text = "Resultado: $sumResult"
+                    } catch (e: NumberFormatException) {
+                        // Notificación de error de formato
+                        Toast.makeText(
+                            context,
+                            "Error: formato de número inválido. Detalle: ${e.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
         }
-        /*Cargar los elementos*/
-        layout.apply {
-            addView(titulo)
-            addView(input1)
-            addView(input2)
-            addView(boton)
-            addView(resultado)
+
+        // Agregar vistas al layout principal
+        mainLayout.apply {
+            addView(titleTextView)
+            addView(numberInput1)
+            addView(numberInput2)
+            addView(resultButton)
+            addView(resultTextView)
         }
 
-        return layout
+        return mainLayout
     }
-    private fun validation(input1: String, input2: String, context: Context) : Boolean {
-        if (input1.isEmpty() || input2.isEmpty()){
-            Toast.makeText(context, "Por favor, revisa los campos marcados.", Toast.LENGTH_SHORT).show()
-            return false
-        }
-        return true
+
+    // Validar que los dos campos no estén vacíos
+    private fun validateInputs(
+        input1: String,
+        input2: String,
+        context: Context
+    ): Boolean {
+        return if (input1.isEmpty() || input2.isEmpty()) {
+            Toast.makeText(
+                context,
+                "Por favor, complete ambos campos antes de continuar.",
+                Toast.LENGTH_SHORT
+            ).show()
+            false
+        } else true
     }
-    private fun sum(number1: Double, number2: Double): Double {
-        val sumation: Double = number1 + number2
-        return sumation
+
+    // Operación suma de dos números
+    private fun sum(
+        number1: Double,
+        number2: Double
+    ): Double {
+        return number1 + number2
     }
 }

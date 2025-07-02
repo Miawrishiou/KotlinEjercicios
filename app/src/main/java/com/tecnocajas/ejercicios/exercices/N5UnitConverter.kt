@@ -1,7 +1,8 @@
+// Clase N5: Conversor de unidades (metros ↔ centímetros)
 package com.tecnocajas.ejercicios.exercices
+
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Typeface
 import android.text.InputType
 import android.view.Gravity
 import android.view.View
@@ -10,128 +11,205 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import com.tecnocajas.ejercicios.R
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import com.tecnocajas.ejercicios.R
 
 class N5UnitConverter : ExerciseInterface {
-    override var ID = 5
-    override var title = "Conversor de Unidades, metros a centimetros."
-    override var description = "Convierte cualquier tipo de unidad a centimetro o metros."
-    private var operation: String = "cm"
+    override var ID: Int = 5
+    override var title: String = "Conversor de unidades: metros ↔ centímetros"
+    override var description: String = "Convierte valores entre metros y centímetros con validación previa"
+
+    // Operación actual: "cm" convierte de cm a m, "m" convierte de m a cm
+    private var conversionOperation: String = "cm"
+
     override fun makeContainer(context: Context): View {
-        /*Layout principal*/
-        val layout = LinearLayout(context).apply {
+        // Cargar tipografías Rubik
+        val fontBold = ResourcesCompat.getFont(context, R.font.rubik_bold)
+        val fontRegular = ResourcesCompat.getFont(context, R.font.rubik_regular)
+        val fontSemiBold = ResourcesCompat.getFont(context, R.font.rubik_semibold)
+
+        // Contenedor principal vertical centrado
+        val mainLayout = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER
-            setPadding(5, 5, 5, 5)
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(32, 32, 32, 32)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+            )
         }
-        val units = LinearLayout(context).apply {
+
+        // Título del ejercicio
+        val titleTextView = TextView(context).apply {
+            text = title
+            textSize = 22f
+            setTextColor(Color.parseColor("#222222"))
+            typeface = fontBold
+            gravity = Gravity.CENTER
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 0, 0, 24) }
+        }
+
+        // Layout horizontal para unidades (simetría centrada)
+        val unitsLayout = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER
-            setPadding(5, 5, 5, 5)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 0, 0, 24) }
         }
-        val unity = TextView(context).apply {
 
+        // TextView unidad origen
+        val unitFromTextView = TextView(context).apply {
             text = "CM"
             textSize = 18f
-            setTextColor(Color.RED)
-            setPadding(5, 5, 5, 5)
+            setTextColor(Color.parseColor("#DD2C00"))
+            typeface = fontSemiBold
+            setPadding(8, 0, 8, 0)
         }
-        val a = TextView(context).apply {
-            text = " a "
+
+        // Separador
+        val arrowTextView = TextView(context).apply {
+            text = "→"
             textSize = 18f
-            setTextColor(Color.BLACK)
-            setPadding(5, 5, 5, 5)
+            setTextColor(Color.parseColor("#444444"))
+            setPadding(8, 0, 8, 0)
         }
-        val toConvert = TextView(context).apply {
+
+        // TextView unidad destino
+        val unitToTextView = TextView(context).apply {
             text = "M"
             textSize = 18f
-            setTextColor(Color.RED)
-            setPadding(5, 5, 5, 5)
+            setTextColor(Color.parseColor("#DD2C00"))
+            typeface = fontSemiBold
+            setPadding(8, 0, 8, 0)
         }
-        val changeConvertion = Button(context).apply {
-            background = ContextCompat.getDrawable(context, R.drawable.button_activities)
+
+        // Botón para cambiar dirección de conversión
+        val changeButton = Button(context).apply {
             text = "Cambiar"
+            typeface = fontSemiBold
+            background = ContextCompat.getDrawable(context, R.drawable.button_activities)
+            setTextColor(Color.WHITE)
             setOnClickListener {
-                if (operation == "cm") {
-                    operation = "m"
-                    unity.text = "M"
-                    toConvert.text = "CM"
+                // Intercambiar operación y etiquetas
+                if (conversionOperation == "cm") {
+                    conversionOperation = "m"
+                    unitFromTextView.text = "M"
+                    unitToTextView.text = "CM"
                 } else {
-                    operation = "cm"
-                    unity.text = "CM"
-                    toConvert.text = "M"
+                    conversionOperation = "cm"
+                    unitFromTextView.text = "CM"
+                    unitToTextView.text = "M"
                 }
             }
         }
-        /*aplicar a todo el contenedor*/
-        units.apply {
-            addView(unity)
-            addView(a)
-            addView(toConvert)
-            addView(changeConvertion)
+
+        unitsLayout.apply {
+            addView(unitFromTextView)
+            addView(arrowTextView)
+            addView(unitToTextView)
+            addView(changeButton)
         }
-        /*Entradas de los numeros*/
-        val input1 = EditText(context).apply {
-            hint = "Número 1"
+
+        // Campo de entrada de valor
+        val numberInput = EditText(context).apply {
+            hint = "Ingrese el valor a convertir"
             inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+            typeface = fontRegular
+            setTextColor(Color.parseColor("#222222"))
+            setHintTextColor(Color.parseColor("#888888"))
+            setBackgroundColor(Color.parseColor("#EEEEEE"))
+            setPadding(24, 16, 24, 16)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 0, 0, 24) }
         }
-        /*Resultados*/
-        val resultado = TextView(context).apply {
+
+        // Texto de resultado
+        val resultTextView = TextView(context).apply {
             text = "Resultado: "
-            setTextColor(Color.LTGRAY)
-            textSize = 18f
+            textSize = 16f
+            setTextColor(Color.DKGRAY)
+            typeface = fontRegular
+            gravity = Gravity.CENTER
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
         }
-        /*Realizar la el promedio*/
-        val boton = Button(context).apply {
-            text = "Conviertelo"
+
+        // Botón para convertir unidad
+        val convertButton = Button(context).apply {
+            text = "Convertir"
+            typeface = fontSemiBold
+            background = ContextCompat.getDrawable(context, R.drawable.button_activities)
+            setTextColor(Color.WHITE)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 0, 0, 24); gravity = Gravity.CENTER_HORIZONTAL }
 
             setOnClickListener {
-                if (validation(input1.text.toString(), context)) {
+                // Validar entrada antes de convertir
+                if (validateInput(numberInput.text.toString(), context)) {
                     try {
-                        var input1 = input1.text.toString().toDouble()
-
-                        var result = convert(input1)
-                        resultado.text = "De ${unity.text} a ${toConvert.text} es: ${result}"
-                    } catch (e : NumberFormatException) {
-                        Toast.makeText(context, "Error en la conversion de valores a double, ${e.message}", Toast.LENGTH_SHORT).show()
+                        val value = numberInput.text.toString().toDouble()
+                        val converted = convert(value)
+                        resultTextView.text = "${unitFromTextView.text} → ${unitToTextView.text}: $converted"
+                    } catch (e: NumberFormatException) {
+                        Toast.makeText(
+                            context,
+                            "Error: formato numérico inválido. Detalle: ${e.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
         }
-        val titulo = TextView(context).apply {
-            text = title
-            textSize = 22f
-            setTextColor(Color.BLACK)
-            typeface = Typeface.DEFAULT_BOLD
+
+        // Agregar todas las vistas al layout principal
+        mainLayout.apply {
+            addView(titleTextView)
+            addView(unitsLayout)
+            addView(numberInput)
+            addView(convertButton)
+            addView(resultTextView)
         }
-        val descripcion = TextView(context).apply {
-            text = description
-            textSize = 18f
-            setTextColor(Color.LTGRAY)
-        }
-        layout.apply {
-            addView(titulo)
-            addView(units)
-            addView(input1)
-            addView(boton)
-            addView(resultado)
-        }
-        return layout
+
+        return mainLayout
     }
-    private fun validation(input: String, context: Context) : Boolean {
-        if (input.isEmpty()) {
-            Toast.makeText(context, "Por favor, revisa los campos marcados. Hay valores nulos", Toast.LENGTH_SHORT).show()
-            return false
-        }
-        return true
+
+    // Validar que el campo no esté vacío
+    private fun validateInput(
+        value: String,
+        context: Context
+    ): Boolean {
+        return if (value.isEmpty()) {
+            Toast.makeText(
+                context,
+                "Por favor, ingrese un valor para convertir.",
+                Toast.LENGTH_SHORT
+            ).show()
+            false
+        } else true
     }
-    private fun convert(input1: Double): Double {
-        var resultado: Double = 0.0
-        when (operation) {
-            "cm" -> resultado = input1.toDouble() / 100
-            "m" -> resultado =  input1.toDouble() * 100
+
+    // Lógica de conversión entre cm y m
+    private fun convert(
+        input: Double
+    ): Double {
+        return if (conversionOperation == "cm") {
+            // Centímetros a metros
+            input / 100
+        } else {
+            // Metros a centímetros
+            input * 100
         }
-        return resultado
     }
 }

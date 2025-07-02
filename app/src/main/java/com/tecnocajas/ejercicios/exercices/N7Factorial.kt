@@ -1,8 +1,8 @@
+// Clase N7: Factorial de un número
 package com.tecnocajas.ejercicios.exercices
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Typeface
 import android.text.InputType
 import android.view.Gravity
 import android.view.View
@@ -11,73 +11,137 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import com.tecnocajas.ejercicios.R
 
 class N7Factorial : ExerciseInterface {
-    override var ID = 7
-    override var title = "Factorial"
-    override var description = "Calcular el factorial de un numero."
+    override var ID: Int = 7
+    override var title: String = "Factorial"
+    override var description: String = "Calcular el factorial de un número con validación previa"
 
     override fun makeContainer(context: Context): View {
-        /*Layout principal*/
-        val layout = LinearLayout(context).apply {
+        // Cargar tipografías Rubik
+        val fontBold = ResourcesCompat.getFont(context, R.font.rubik_bold)
+        val fontRegular = ResourcesCompat.getFont(context, R.font.rubik_regular)
+        val fontSemiBold = ResourcesCompat.getFont(context, R.font.rubik_semibold)
+
+        // Contenedor principal vertical centrado
+        val mainLayout = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER
-            setPadding(5, 5, 5, 5)
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(32, 32, 32, 32)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+            )
         }
-        /*Titulo del ejercicio*/
-        val titulo = TextView(context).apply {
+
+        // Título del ejercicio
+        val titleTextView = TextView(context).apply {
             text = title
             textSize = 22f
-            setTextColor(Color.BLACK)
-            typeface = Typeface.DEFAULT_BOLD
+            setTextColor(Color.parseColor("#222222"))
+            typeface = fontBold
+            gravity = Gravity.CENTER
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 0, 0, 24) }
         }
-        /*Entradas de los numeros*/
-        val input1 = EditText(context).apply {
-            hint = "Ingrese su numero"
+
+        // Campo de entrada para el número
+        val numberInput = EditText(context).apply {
+            hint = "Ingrese un número"
             inputType = InputType.TYPE_CLASS_NUMBER
+            typeface = fontRegular
+            setTextColor(Color.parseColor("#222222"))
+            setHintTextColor(Color.parseColor("#888888"))
+            setBackgroundColor(Color.parseColor("#EEEEEE"))
+            setPadding(24, 16, 24, 16)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 0, 0, 24) }
         }
-        /*Resultados*/
-        val resultado = TextView(context).apply {
+
+        // Texto de resultado
+        val resultTextView = TextView(context).apply {
             text = "Resultado: "
-            setTextColor(Color.LTGRAY)
-            textSize = 18f
+            textSize = 16f
+            setTextColor(Color.DKGRAY)
+            typeface = fontRegular
+            gravity = Gravity.CENTER
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
         }
-        /*Realizar la el promedio*/
-        val boton = Button(context).apply {
-            text = "Factorial"
+
+        // Botón para calcular factorial
+        val resultButton = Button(context).apply {
+            text = "Calcular factorial"
+            typeface = fontSemiBold
+            background = ContextCompat.getDrawable(context, R.drawable.button_activities)
+            setTextColor(Color.WHITE)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 0, 0, 24); gravity = Gravity.CENTER_HORIZONTAL }
 
             setOnClickListener {
-                if (validation(input1.text.toString(), context)) {
+                // Validar entrada antes de calcular
+                val inputText = numberInput.text.toString()
+                if (validateInput(inputText, context)) {
                     try {
-                        var input1 = input1.text.toString().toInt()
-                        var result = factorial(input1)
-                        resultado.text = "El Factorial es: ${result}"
-                    } catch (e : NumberFormatException) {
-                        Toast.makeText(context, "Error en la conversion de valores a integer, ${e.message}", Toast.LENGTH_SHORT).show()
+                        val value = inputText.toInt()
+                        val factorialResult = factorial(value)
+                        resultTextView.text = "El factorial de $value es: $factorialResult"
+                    } catch (e: NumberFormatException) {
+                        // Notificación de error de formato
+                        Toast.makeText(
+                            context,
+                            "Error: formato de número inválido. Detalle: ${e.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
         }
-        /*Cargar los elementos dentro del layout para renderizar por bloque*/
-        layout.apply {
-            addView(titulo)
-            addView(input1)
-            addView(boton)
-            addView(resultado)
+
+        // Agregar vistas al layout principal
+        mainLayout.apply {
+            addView(titleTextView)
+            addView(numberInput)
+            addView(resultButton)
+            addView(resultTextView)
         }
-        return layout
+
+        return mainLayout
     }
-    private fun validation(input1: String, context: Context) : Boolean {
-        if (input1.isEmpty()){
-            Toast.makeText(context, "Por favor, revisa los campos marcados. Hay valores nulos", Toast.LENGTH_SHORT).show()
-            return false
-        }
-        return true
+
+    // Validar que el campo no esté vacío
+    private fun validateInput(
+        value: String,
+        context: Context
+    ): Boolean {
+        return if (value.isEmpty()) {
+            Toast.makeText(
+                context,
+                "Por favor, ingrese un número antes de continuar.",
+                Toast.LENGTH_SHORT
+            ).show()
+            false
+        } else true
     }
-    private fun factorial(input1: Int): Int {
-        var acumulator = input1
-        for (i in 1 .. input1) {
-            if (i == input1) {
+
+    // Calcular factorial de un número (lógica intacta)
+    private fun factorial(
+        input: Int
+    ): Int {
+        var acumulator = input
+        for (i in 1 .. input) {
+            if (i == input) {
                 continue
             }
             acumulator*=i

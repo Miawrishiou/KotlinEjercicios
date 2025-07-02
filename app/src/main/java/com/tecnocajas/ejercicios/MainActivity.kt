@@ -33,6 +33,7 @@ import com.tecnocajas.ejercicios.exercices.N17FactorialRecursivity
 import com.tecnocajas.ejercicios.exercices.N18VocalToNumber
 import com.tecnocajas.ejercicios.exercices.N2ThreeNumberProm
 import com.tecnocajas.ejercicios.exercices.N1TwoNumSum
+import com.tecnocajas.ejercicios.exercices.N20DecimalToRoman
 import com.tecnocajas.ejercicios.exercices.N3TwoNumberMayor
 import com.tecnocajas.ejercicios.exercices.N4OddEven
 import com.tecnocajas.ejercicios.exercices.N5UnitConverter
@@ -67,6 +68,7 @@ class MainActivity : AppCompatActivity() {
     private val Fibonacci: N16Fibonacci = N16Fibonacci()
     private val FactorialRecursivity: N17FactorialRecursivity = N17FactorialRecursivity()
     private val VocalToNumber: N18VocalToNumber = N18VocalToNumber()
+    private val DecimalToRoman: N20DecimalToRoman = N20DecimalToRoman()
     private lateinit var vista: View
     private lateinit var dynamicContainer: FrameLayout
     private var exitExerciseButton: AppCompatButton?= null
@@ -167,7 +169,8 @@ class MainActivity : AppCompatActivity() {
             CardItem(RevertArray.ID, RevertArray.title, RevertArray.description),
             CardItem(Fibonacci.ID, Fibonacci.title, Fibonacci.description),
             CardItem(FactorialRecursivity.ID, FactorialRecursivity.title, FactorialRecursivity.description),
-            CardItem(VocalToNumber.ID, VocalToNumber.title, VocalToNumber.description)
+            CardItem(VocalToNumber.ID, VocalToNumber.title, VocalToNumber.description),
+            CardItem(DecimalToRoman.ID, DecimalToRoman.title, DecimalToRoman.description)
         )
         val adapter = Adapter(cardExercise) { card ->
             when (card.ID) {
@@ -189,6 +192,7 @@ class MainActivity : AppCompatActivity() {
                 16 -> fibonacci()
                 17 -> factorialRecursivity()
                 18 -> vocalToNumber()
+                20 -> decimalToRoman()
             }
         }
         exercisesCarousel.adapter = adapter
@@ -277,6 +281,10 @@ class MainActivity : AppCompatActivity() {
     /*Vocal a número*/
     private fun vocalToNumber() {
         setDynamicExercise(VocalToNumber.makeContainer(this))
+    }
+    /*Decimal a romanos*/
+    private fun decimalToRoman() {
+        setDynamicExercise(DecimalToRoman.makeContainer(this))
     }
     /*Super metodo para hacer las vistas*/
     private fun setDynamicExercise(view: View) {

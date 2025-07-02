@@ -1,12 +1,10 @@
+// Clase N9: Calculadora de dos números
 package com.tecnocajas.ejercicios.exercices
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Typeface
 import android.text.InputFilter
 import android.text.InputType
-import android.text.TextWatcher
-import android.text.Editable
 import android.view.Gravity
 import android.view.View
 import android.widget.Button
@@ -15,105 +13,199 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import com.tecnocajas.ejercicios.R
 
 class N9Calculator : ExerciseInterface {
-    override var ID = 9
-    override var title = "Calculadora"
-    override var description = "Realiza operaciones aritmeticas con dos numeros."
+    override var ID: Int = 9
+    override var title: String = "Calculadora"
+    override var description: String = "Realiza operaciones aritméticas con dos números con validación previa"
+
     override fun makeContainer(context: Context): View {
-        /*Layout principal*/
-        val layout = LinearLayout(context).apply {
+        // Cargar tipografías Rubik
+        val fontBold = ResourcesCompat.getFont(context, R.font.rubik_bold)
+        val fontRegular = ResourcesCompat.getFont(context, R.font.rubik_regular)
+        val fontSemiBold = ResourcesCompat.getFont(context, R.font.rubik_semibold)
+
+        // Contenedor principal vertical centrado
+        val mainLayout = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER
-            setPadding(5, 5, 5, 5)
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(32, 32, 32, 32)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+            )
         }
-        /*Contenedor para los numero y la operacion que se introduzca*/
-        val expression = LinearLayout(context).apply {
+
+        // Título del ejercicio
+        val titleTextView = TextView(context).apply {
+            text = title
+            textSize = 22f
+            setTextColor(Color.parseColor("#222222"))
+            typeface = fontBold
+            gravity = Gravity.CENTER
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 0, 0, 24) }
+        }
+
+        // Contenedor horizontal para expresión (simetría centrada)
+        val expressionLayout = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER
-            setPadding(5, 5, 5, 5)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 0, 0, 24) }
         }
-        val input1 = EditText(context).apply {
-            hint = "Número 1"
+
+        // Primer operando
+        val firstOperandInput = EditText(context).apply {
+            hint = "N1"
             inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED
-            layoutParams = LinearLayout.LayoutParams(100, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+            typeface = fontRegular
+            setTextColor(Color.parseColor("#222222"))
+            setHintTextColor(Color.parseColor("#888888"))
+            setBackgroundColor(Color.parseColor("#EEEEEE"))
+            setPadding(16, 8, 16, 8)
+            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                setMargins(0, 0, 8, 0)
+            }
         }
-        val operation = EditText(context).apply {
-            hint = "Número 1"
+
+        // Operador
+        val operatorInput = EditText(context).apply {
+            hint = "Signo"
             inputType = InputType.TYPE_CLASS_TEXT
-            layoutParams = LinearLayout.LayoutParams(100, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-            filters = arrayOf(InputFilter { source, _, _, _, _, _ ->
-                if (source.matches(Regex("[+\\-*/]*"))) {
+            typeface = fontRegular
+            setTextColor(Color.parseColor("#222222"))
+            setHintTextColor(Color.parseColor("#888888"))
+            setBackgroundColor(Color.parseColor("#EEEEEE"))
+            filters = arrayOf(InputFilter { source, _, _, dest, _, _ ->
+                if (dest.isEmpty() && source.length == 1 && source.matches(Regex("[+\\-*/]"))) {
                     return@InputFilter source
                 }
                 return@InputFilter ""
             })
+            gravity = Gravity.CENTER
+            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                setMargins(8, 0, 8, 0)
+            }
         }
-        val input2 = EditText(context).apply {
-            hint = "Número 2"
-            inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL  or InputType.TYPE_NUMBER_FLAG_SIGNED
-            layoutParams = LinearLayout.LayoutParams(100, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+
+        // Segundo operando
+        val secondOperandInput = EditText(context).apply {
+            hint = "N2"
+            inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED
+            typeface = fontRegular
+            setTextColor(Color.parseColor("#222222"))
+            setHintTextColor(Color.parseColor("#888888"))
+            setBackgroundColor(Color.parseColor("#EEEEEE"))
+            setPadding(16, 8, 16, 8)
+            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                setMargins(8, 0, 0, 0)
+            }
         }
-        /*aplicar a todo el contenedor*/
-        expression.apply {
-            addView(input1)
-            addView(operation)
-            addView(input2)
+
+        // Agregar campos de expresión
+        expressionLayout.apply {
+            addView(firstOperandInput)
+            addView(operatorInput)
+            addView(secondOperandInput)
         }
-        /*Resultados*/
-        val resultado = TextView(context).apply {
+
+        // Texto de resultado
+        val resultTextView = TextView(context).apply {
             text = "Resultado: "
-            setTextColor(Color.LTGRAY)
-            textSize = 18f
+            textSize = 16f
+            setTextColor(Color.DKGRAY)
+            typeface = fontRegular
+            gravity = Gravity.CENTER
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
         }
-        /*Realizar la el promedio*/
-        val boton = Button(context).apply {
+
+        // Botón para operar
+        val computeButton = Button(context).apply {
             text = "Operar"
+            typeface = fontSemiBold
+            background = ContextCompat.getDrawable(context, R.drawable.button_activities)
+            setTextColor(Color.WHITE)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 0, 0, 24); gravity = Gravity.CENTER_HORIZONTAL }
 
             setOnClickListener {
-                if (validation(input1.text.toString(), operation.text.toString(), input2.text.toString(), context)) {
+                // Validar antes de operar
+                if (validateInputs(
+                        firstOperandInput.text.toString(),
+                        operatorInput.text.toString(),
+                        secondOperandInput.text.toString(),
+                        context
+                    )
+                ) {
                     try {
-                        var input1 = input1.text.toString().toDouble()
-                        var input2 = input2.text.toString().toDouble()
-                        var operation = operation.text.toString()
-                        var result = operation(input1, input2, operation, context)
-                        resultado.text = "El resultado es: ${result}"
-                    } catch (e : NumberFormatException) {
-                        Toast.makeText(context, "Error en la conversion de valores a double, ${e.message}", Toast.LENGTH_SHORT).show()
+                        val num1 = firstOperandInput.text.toString().toDouble()
+                        val num2 = secondOperandInput.text.toString().toDouble()
+                        val op = operatorInput.text.toString()
+                        val result = operation(num1, num2, op, context)
+                        resultTextView.text = "El resultado es: $result"
+                    } catch (e: NumberFormatException) {
+                        Toast.makeText(
+                            context,
+                            "Error: formato numérico inválido. Detalle: ${e.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
         }
-        val titulo = TextView(context).apply {
-            text = title
-            textSize = 22f
-            setTextColor(Color.BLACK)
-            typeface = Typeface.DEFAULT_BOLD
+
+        // Construir layout principal
+        mainLayout.apply {
+            addView(titleTextView)
+            addView(expressionLayout)
+            addView(computeButton)
+            addView(resultTextView)
         }
-        layout.apply {
-            addView(titulo)
-            addView(expression)
-            addView(boton)
-            addView(resultado)
-        }
-        return layout
+
+        return mainLayout
     }
 
-    private fun validation(input1: String, expression: String, input2: String, context : Context) : Boolean {
-        if (input1.isEmpty() || expression.isEmpty() || input2.isEmpty()) {
-            Toast.makeText(context, "Por favor, revisa los campos marcados. Hay valores nulos", Toast.LENGTH_SHORT).show()
-            return false
-        }
-        return true
+    // Validar que ninguno de los campos esté vacío
+    private fun validateInputs(
+        operand1: String,
+        operator: String,
+        operand2: String,
+        context: Context
+    ): Boolean {
+        return if (operand1.isEmpty() || operator.isEmpty() || operand2.isEmpty()) {
+            Toast.makeText(
+                context,
+                "Por favor, complete todos los campos antes de continuar.",
+                Toast.LENGTH_SHORT
+            ).show()
+            false
+        } else true
     }
 
-    private fun operation(input1: Double, input2: Double, operation: String, context: Context): Double {
-        var resultado: Double = 0.0
+    // Realiza la operación indicada
+    private fun operation(
+        input1: Double,
+        input2: Double,
+        operation: String,
+        context: Context
+    ): Double {
+        var resultado = 0.0
         when (operation) {
             "+" -> resultado = input1 + input2
             "-" -> resultado = input1 - input2
-            "x" -> resultado = input1 * input2
+            "x", "*" -> resultado = input1 * input2
             "/" -> if (input2 != 0.0) {
                 resultado = input1 / input2
             } else {
