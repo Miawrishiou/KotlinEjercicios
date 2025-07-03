@@ -49,7 +49,6 @@ class WithoutExercises : ExerciseInterface {
             addView(titulo)
             addView(descripcion)
         }
-
         return layout
     }
 }

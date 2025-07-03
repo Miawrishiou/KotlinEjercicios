@@ -31,6 +31,7 @@ import com.tecnocajas.ejercicios.exercices.N15RevertArray
 import com.tecnocajas.ejercicios.exercices.N16Fibonacci
 import com.tecnocajas.ejercicios.exercices.N17FactorialRecursivity
 import com.tecnocajas.ejercicios.exercices.N18VocalToNumber
+import com.tecnocajas.ejercicios.exercices.N19PasswordValidation
 import com.tecnocajas.ejercicios.exercices.N2ThreeNumberProm
 import com.tecnocajas.ejercicios.exercices.N1TwoNumSum
 import com.tecnocajas.ejercicios.exercices.N20DecimalToRoman
@@ -68,6 +69,7 @@ class MainActivity : AppCompatActivity() {
     private val Fibonacci: N16Fibonacci = N16Fibonacci()
     private val FactorialRecursivity: N17FactorialRecursivity = N17FactorialRecursivity()
     private val VocalToNumber: N18VocalToNumber = N18VocalToNumber()
+    private val PasswordValidation: N19PasswordValidation = N19PasswordValidation()
     private val DecimalToRoman: N20DecimalToRoman = N20DecimalToRoman()
     private lateinit var vista: View
     private lateinit var dynamicContainer: FrameLayout
@@ -170,6 +172,7 @@ class MainActivity : AppCompatActivity() {
             CardItem(Fibonacci.ID, Fibonacci.title, Fibonacci.description),
             CardItem(FactorialRecursivity.ID, FactorialRecursivity.title, FactorialRecursivity.description),
             CardItem(VocalToNumber.ID, VocalToNumber.title, VocalToNumber.description),
+            CardItem(PasswordValidation.ID, PasswordValidation.title, PasswordValidation.description),
             CardItem(DecimalToRoman.ID, DecimalToRoman.title, DecimalToRoman.description)
         )
         val adapter = Adapter(cardExercise) { card ->
@@ -192,6 +195,7 @@ class MainActivity : AppCompatActivity() {
                 16 -> fibonacci()
                 17 -> factorialRecursivity()
                 18 -> vocalToNumber()
+                19 -> passwordValidation()
                 20 -> decimalToRoman()
             }
         }
@@ -285,6 +289,10 @@ class MainActivity : AppCompatActivity() {
     /*Decimal a romanos*/
     private fun decimalToRoman() {
         setDynamicExercise(DecimalToRoman.makeContainer(this))
+    }
+    /*Validacion de una contraseña*/
+    private fun passwordValidation() {
+        setDynamicExercise(PasswordValidation.makeContainer(this))
     }
     /*Super metodo para hacer las vistas*/
     private fun setDynamicExercise(view: View) {
